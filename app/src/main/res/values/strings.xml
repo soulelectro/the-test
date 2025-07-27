@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Temporary Social</string>
+    <string name="welcome_message">Welcome to Temporary Social!</string>
+    <string name="session_expires">Session expires in: %s</string>
+    <string name="login_title">Login with OTP</string>
+    <string name="phone_number_hint">Phone Number (+91XXXXXXXXXX)</string>
+    <string name="otp_hint">Enter OTP</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="verify_otp">Verify OTP &amp; Login</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
+    <string name="chat">Chat</string>
+    <string name="reels">Reels</string>
+    <string name="payments">Payments</string>
+    <string name="test_auth">Test Auth API</string>
+    <string name="test_realtime">Test Realtime API</string>
+    <string name="test_messaging">Test Messaging API</string>
+    <string name="test_payment">Test Payment API</string>
+    <string name="test_reels">Test Reels API</string>
+    <string name="test_social">Test Social API</string>
+</resources>
