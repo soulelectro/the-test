@@ -15,4 +15,12 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "export JAVA_HOME=$(nix-env --query --out-path openjdk | head -1)"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PATH=$JAVA_HOME/bin:$PATH"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "./gradlew assembleDebug"
