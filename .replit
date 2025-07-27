@@ -15,7 +15,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "export JAVA_HOME=$(nix-env --query --out-path openjdk | head -1)"
+args = 'export JAVA_HOME=$(find /nix/store -name "*openjdk*" -type d | grep -E "openjdk-17\.[0-9]+" | head -1)'
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -24,3 +24,15 @@ args = "export PATH=$JAVA_HOME/bin:$PATH"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "./gradlew assembleDebug"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"✅ APK built successfully!\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📱 APK location: app/build/outputs/apk/debug/app-debug.apk\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📥 To download: Right-click the APK file in the file browser and select 'Download'\""
