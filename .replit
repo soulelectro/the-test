@@ -11,7 +11,7 @@ runButton = "Build Android App"
 [[workflows.workflow]]
 name = "Build Android App"
 author = 45518247
-mode = "sequential"
+mode = "parallel"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
