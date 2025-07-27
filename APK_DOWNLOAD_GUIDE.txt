@@ -1,0 +1,71 @@
+
+🚀 TEMPORARY SOCIAL - APK DOWNLOAD GUIDE
+=============================================
+
+📱 APK FILE INFORMATION:
+- App Name: Temporary Social
+- Package: com.temporarysocial.app
+- Version: 1.0 (Build 1)
+- Size: ~15-20 MB
+- Min Android: 7.0 (API 24)
+
+📍 APK LOCATION IN REPLIT:
+app/build/outputs/apk/debug/app-debug.apk
+
+📥 HOW TO DOWNLOAD ON PHONE:
+1. Wait for build to complete (green ✅ message)
+2. Navigate to: app → build → outputs → apk → debug
+3. Find file: app-debug.apk
+4. Long press on the file
+5. Select "Download" or "Save"
+6. File will download to your phone
+
+📲 INSTALLATION STEPS:
+1. Go to phone Settings → Security
+2. Enable "Unknown Sources" or "Install from Unknown Sources"
+3. Open Downloads folder on your phone
+4. Tap on "app-debug.apk"
+5. Tap "Install"
+6. Wait for installation to complete
+7. Open "Temporary Social" app
+
+🔧 APP FEATURES:
+- OTP Login (5-hour sessions)
+- Ephemeral Chat (messages expire in 5 hours)
+- Video Reels (Instagram-like)
+- UPI Payments (Razorpay integration)
+- Social Features (friends, following)
+- Real-time messaging
+
+🌐 API ENDPOINTS CONNECTED:
+- Auth API: Login, Profile, Search
+- Messaging API: Chat, Rooms, Real-time
+- Payment API: UPI, Wallet, Transactions
+- Reels API: Videos, Likes, Comments
+- Social API: Friends, Follow, Activity
+- Realtime API: WebSocket connections
+
+⚠️ IMPORTANT NOTES:
+- All data expires in 5 hours
+- Requires internet connection
+- Phone number needed for OTP login
+- Compatible with Android 7.0+
+
+🔗 REAL-TIME CONNECTION ID:
+iwwn9cR-ICaeaX8-p2JcU-CRKrg
+
+📞 SUPPORT:
+If app doesn't install or run properly:
+1. Check Android version (must be 7.0+)
+2. Clear browser cache and re-download
+3. Ensure "Unknown Sources" is enabled
+4. Try restarting phone after installation
+
+🎯 QUICK START:
+1. Download APK using steps above
+2. Install on Android device
+3. Open app and enter phone number
+4. Verify OTP to start 5-hour session
+5. Explore chat, reels, payments, and social features
+
+Built with ❤️ using Kotlin + Retrofit + Material Design
