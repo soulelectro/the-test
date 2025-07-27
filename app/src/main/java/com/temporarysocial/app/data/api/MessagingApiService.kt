@@ -113,3 +113,34 @@ data class ExtendExpiryRequest(
     val messageId: Int,
     val additionalHours: Int = 5
 )
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.*
+import retrofit2.http.*
+
+interface MessagingApiService {
+    
+    @GET("messages/{userId}")
+    suspend fun getMessages(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: Int
+    ): ApiResponse<List<Message>>
+    
+    @POST("messages")
+    suspend fun sendMessage(
+        @Header("Authorization") token: String,
+        @Body message: Message
+    ): ApiResponse<Message>
+    
+    @GET("messages/rooms")
+    suspend fun getChatRooms(@Header("Authorization") token: String): ApiResponse<List<ChatRoom>>
+    
+    @GET("messages/unread-count")
+    suspend fun getUnreadCount(@Header("Authorization") token: String): ApiResponse<Int>
+    
+    @PUT("messages/{messageId}/read")
+    suspend fun markAsRead(
+        @Header("Authorization") token: String,
+        @Path("messageId") messageId: Int
+    ): ApiResponse<String>
+}

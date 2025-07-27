@@ -150,3 +150,34 @@ data class AddCommentRequest(
     val content: String,
     val parentCommentId: Int? = null // for replies
 )
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.ApiResponse
+import retrofit2.http.*
+
+interface ReelsApiService {
+    
+    @GET("reels/feed")
+    suspend fun getReelsFeed(@Header("Authorization") token: String): ApiResponse<List<Any>>
+    
+    @GET("reels/trending")
+    suspend fun getTrendingReels(@Header("Authorization") token: String): ApiResponse<List<Any>>
+    
+    @POST("reels")
+    suspend fun uploadReel(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Any>
+    ): ApiResponse<Any>
+    
+    @GET("reels/{reelId}/comments")
+    suspend fun getReelComments(
+        @Header("Authorization") token: String,
+        @Path("reelId") reelId: Int
+    ): ApiResponse<List<Any>>
+    
+    @POST("reels/{reelId}/like")
+    suspend fun likeReel(
+        @Header("Authorization") token: String,
+        @Path("reelId") reelId: Int
+    ): ApiResponse<String>
+}

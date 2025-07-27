@@ -52,3 +52,31 @@ class PaymentActivity : AppCompatActivity() {
         }
     }
 }
+package com.temporarysocial.app.ui.payment
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.temporarysocial.app.databinding.ActivityPaymentBinding
+
+class PaymentActivity : AppCompatActivity() {
+    
+    private lateinit var binding: ActivityPaymentBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityPaymentBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        setupUI()
+    }
+    
+    private fun setupUI() {
+        binding.apply {
+            btnBack.setOnClickListener {
+                finish()
+            }
+            
+            // TODO: Implement payment functionality
+        }
+    }
+}

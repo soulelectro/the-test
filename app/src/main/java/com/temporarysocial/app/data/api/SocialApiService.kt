@@ -184,3 +184,34 @@ data class ActivityItem(
     val actor: User?,
     val target: Any? // Can be User, Reel, etc.
 )
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.*
+import retrofit2.http.*
+
+interface SocialApiService {
+    
+    @GET("social/search")
+    suspend fun searchUsers(
+        @Header("Authorization") token: String,
+        @Query("query") query: String
+    ): ApiResponse<List<User>>
+    
+    @POST("social/follow")
+    suspend fun followUser(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Int>
+    ): ApiResponse<String>
+    
+    @GET("social/friends")
+    suspend fun getFriends(@Header("Authorization") token: String): ApiResponse<List<User>>
+    
+    @GET("social/activity")
+    suspend fun getActivity(@Header("Authorization") token: String): ApiResponse<List<Any>>
+    
+    @POST("social/block")
+    suspend fun blockUser(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Int>
+    ): ApiResponse<String>
+}

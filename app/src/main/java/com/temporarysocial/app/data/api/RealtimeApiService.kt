@@ -89,3 +89,22 @@ data class AblyMessage(
     val timestamp: Long,
     val clientId: String
 )
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.ApiResponse
+import retrofit2.http.*
+
+interface RealtimeApiService {
+    
+    @GET("realtime/ably-token")
+    suspend fun getAblyToken(@Header("Authorization") token: String): ApiResponse<String>
+    
+    @GET("realtime/channels")
+    suspend fun getChannels(@Header("Authorization") token: String): ApiResponse<List<String>>
+    
+    @POST("realtime/join-channel")
+    suspend fun joinChannel(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, String>
+    ): ApiResponse<String>
+}

@@ -173,3 +173,147 @@ class SessionManager(private val context: Context) {
         return remainingTime <= (criticalMinutes * 60 * 1000)
     }
 }
+package com.temporarysocial.app.utils
+
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import com.google.gson.Gson
+import com.temporarysocial.app.data.model.User
+import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
+
+class SessionManager(private val context: Context) {
+    
+    companion object {
+        private const val PREFS_NAME = "temp_social_session"
+        private const val KEY_AUTH_TOKEN = "auth_token"
+        private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_USER_DATA = "user_data"
+        private const val KEY_SESSION_START = "session_start"
+        private const val SESSION_DURATION = 5 * 60 * 60 * 1000L // 5 hours in milliseconds
+    }
+    
+    private val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    
+    private val sharedPrefs: SharedPreferences = EncryptedSharedPreferences.create(
+        PREFS_NAME,
+        masterKeyAlias,
+        context,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+    
+    private var sessionExpiryCallback: (() -> Unit)? = null
+    private var sessionMonitoringJob: Job? = null
+    
+    fun saveAuthToken(token: String) {
+        sharedPrefs.edit().putString(KEY_AUTH_TOKEN, token).apply()
+    }
+    
+    fun getAuthToken(): String? {
+        return sharedPrefs.getString(KEY_AUTH_TOKEN, null)
+    }
+    
+    fun saveRefreshToken(token: String) {
+        sharedPrefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
+    }
+    
+    fun getRefreshToken(): String? {
+        return sharedPrefs.getString(KEY_REFRESH_TOKEN, null)
+    }
+    
+    fun saveUserData(user: User) {
+        val gson = Gson()
+        val userJson = gson.toJson(user)
+        sharedPrefs.edit().putString(KEY_USER_DATA, userJson).apply()
+    }
+    
+    fun getUserData(): User? {
+        val userJson = sharedPrefs.getString(KEY_USER_DATA, null)
+        return if (userJson != null) {
+            try {
+                Gson().fromJson(userJson, User::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        } else null
+    }
+    
+    fun startSession() {
+        val currentTime = System.currentTimeMillis()
+        sharedPrefs.edit().putLong(KEY_SESSION_START, currentTime).apply()
+    }
+    
+    fun isLoggedIn(): Boolean {
+        return getAuthToken() != null && !isSessionExpired()
+    }
+    
+    fun isSessionExpired(): Boolean {
+        val sessionStart = sharedPrefs.getLong(KEY_SESSION_START, 0)
+        if (sessionStart == 0L) return true
+        
+        val currentTime = System.currentTimeMillis()
+        return (currentTime - sessionStart) >= SESSION_DURATION
+    }
+    
+    fun getRemainingSessionTime(): Long {
+        val sessionStart = sharedPrefs.getLong(KEY_SESSION_START, 0)
+        if (sessionStart == 0L) return 0
+        
+        val currentTime = System.currentTimeMillis()
+        val elapsed = currentTime - sessionStart
+        val remaining = SESSION_DURATION - elapsed
+        return if (remaining > 0) remaining else 0
+    }
+    
+    fun getRemainingSessionTimeFormatted(): String {
+        val remaining = getRemainingSessionTime()
+        if (remaining <= 0) return "00:00:00"
+        
+        val hours = remaining / (1000 * 60 * 60)
+        val minutes = (remaining % (1000 * 60 * 60)) / (1000 * 60)
+        val seconds = (remaining % (1000 * 60)) / 1000
+        
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    
+    fun getSessionProgress(): Float {
+        val sessionStart = sharedPrefs.getLong(KEY_SESSION_START, 0)
+        if (sessionStart == 0L) return 0f
+        
+        val currentTime = System.currentTimeMillis()
+        val elapsed = currentTime - sessionStart
+        val progress = elapsed.toFloat() / SESSION_DURATION.toFloat()
+        return if (progress <= 1f) progress else 1f
+    }
+    
+    fun isSessionCritical(): Boolean {
+        val remaining = getRemainingSessionTime()
+        return remaining <= (30 * 60 * 1000) // Last 30 minutes
+    }
+    
+    fun setSessionExpiryCallback(callback: () -> Unit) {
+        sessionExpiryCallback = callback
+    }
+    
+    fun startSessionMonitoring() {
+        sessionMonitoringJob?.cancel()
+        sessionMonitoringJob = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                if (isLoggedIn() && isSessionExpired()) {
+                    sessionExpiryCallback?.invoke()
+                    break
+                }
+                delay(1000) // Check every second
+            }
+        }
+    }
+    
+    fun clearSession() {
+        sessionMonitoringJob?.cancel()
+        sharedPrefs.edit().clear().apply()
+    }
+}

@@ -107,3 +107,42 @@ sealed class NetworkResult<T> {
     data class Error<T>(val message: String) : NetworkResult<T>()
     data class Loading<T>(val isLoading: Boolean = true) : NetworkResult<T>()
 }
+package com.temporarysocial.app.data.network
+
+import com.temporarysocial.app.data.api.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+class NetworkManager {
+    
+    companion object {
+        private const val BASE_URL = "https://api.temporarysocial.com/" // Replace with actual URL
+    }
+    
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
+    
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    
+    val authApiService: AuthApiService = retrofit.create(AuthApiService::class.java)
+    val realtimeApiService: RealtimeApiService = retrofit.create(RealtimeApiService::class.java)
+    val messagingApiService: MessagingApiService = retrofit.create(MessagingApiService::class.java)
+    val paymentApiService: PaymentApiService = retrofit.create(PaymentApiService::class.java)
+    val reelsApiService: ReelsApiService = retrofit.create(ReelsApiService::class.java)
+    val socialApiService: SocialApiService = retrofit.create(SocialApiService::class.java)
+}

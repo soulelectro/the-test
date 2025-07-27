@@ -1,3 +1,4 @@
+
 package com.temporarysocial.app.viewmodel
 
 import android.app.Application
@@ -37,30 +38,34 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             _isLoading.value = true
             _errorMessage.value = null
             
-            val request = LoginRequest(phoneNumber)
-            
-            when (val result = safeApiCall { networkManager.authApiService.login(request) }) {
-                is NetworkResult.Success -> {
-                    result.data.data?.let { loginResponse ->
-                        if (loginResponse.otpSent) {
-                            currentSessionId = loginResponse.sessionId
-                            _otpSent.value = true
-                        } else {
-                            _errorMessage.value = "Failed to send OTP"
+            try {
+                val request = LoginRequest(phoneNumber)
+                
+                when (val result = safeApiCall { networkManager.authApiService.login(request) }) {
+                    is NetworkResult.Success -> {
+                        result.data.data?.let { loginResponse ->
+                            if (loginResponse.otpSent) {
+                                currentSessionId = loginResponse.sessionId
+                                _otpSent.value = true
+                            } else {
+                                _errorMessage.value = "Failed to send OTP"
+                            }
+                        } ?: run {
+                            _errorMessage.value = "Invalid response from server"
                         }
-                    } ?: run {
-                        _errorMessage.value = "Invalid response from server"
+                    }
+                    is NetworkResult.Error -> {
+                        _errorMessage.value = result.message
+                    }
+                    is NetworkResult.Exception -> {
+                        _errorMessage.value = "Network error: ${result.e.message}"
                     }
                 }
-                is NetworkResult.Error -> {
-                    _errorMessage.value = result.message
-                }
-                is NetworkResult.Loading -> {
-                    // Handle loading state if needed
-                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error sending OTP: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            
-            _isLoading.value = false
         }
     }
     
@@ -69,31 +74,35 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             _isLoading.value = true
             _errorMessage.value = null
             
-            val request = OTPVerificationRequest(phoneNumber, otp, currentSessionId)
-            
-            when (val result = safeApiCall { networkManager.authApiService.verifyOTP(request) }) {
-                is NetworkResult.Success -> {
-                    result.data.data?.let { otpResponse ->
-                        if (otpResponse.token.isNotEmpty() && otpResponse.user != null) {
-                            // Save session
-                            sessionManager.saveSession(otpResponse.token, otpResponse.user.id)
+            try {
+                val request = OTPVerificationRequest(phoneNumber, otp, currentSessionId)
+                
+                when (val result = safeApiCall { networkManager.authApiService.verifyOTP(request) }) {
+                    is NetworkResult.Success -> {
+                        result.data.data?.let { authResponse ->
+                            // Save tokens and user data
+                            sessionManager.saveAuthToken(authResponse.token)
+                            sessionManager.saveRefreshToken(authResponse.refreshToken)
+                            sessionManager.saveUserData(authResponse.user)
+                            sessionManager.startSession()
+                            
                             _loginSuccess.value = true
-                        } else {
-                            _errorMessage.value = "Invalid OTP or user data"
+                        } ?: run {
+                            _errorMessage.value = "Invalid verification response"
                         }
-                    } ?: run {
-                        _errorMessage.value = "Invalid response from server"
+                    }
+                    is NetworkResult.Error -> {
+                        _errorMessage.value = result.message
+                    }
+                    is NetworkResult.Exception -> {
+                        _errorMessage.value = "Network error: ${result.e.message}"
                     }
                 }
-                is NetworkResult.Error -> {
-                    _errorMessage.value = result.message
-                }
-                is NetworkResult.Loading -> {
-                    // Handle loading state if needed
-                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error verifying OTP: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
-            
-            _isLoading.value = false
         }
     }
 }

@@ -72,3 +72,31 @@ interface AuthApiService {
     @POST("session/refresh")
     suspend fun refreshSession(@Header("Authorization") token: String): Response<ApiResponse<OTPVerificationResponse>>
 }
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.*
+import retrofit2.http.*
+
+interface AuthApiService {
+    
+    @POST("auth/login")
+    suspend fun login(@Body request: LoginRequest): ApiResponse<LoginResponse>
+    
+    @POST("auth/verify-otp")
+    suspend fun verifyOTP(@Body request: OTPVerificationRequest): ApiResponse<AuthResponse>
+    
+    @GET("auth/profile")
+    suspend fun getProfile(@Header("Authorization") token: String): ApiResponse<User>
+    
+    @POST("auth/refresh")
+    suspend fun refreshToken(@Header("Authorization") refreshToken: String): ApiResponse<AuthResponse>
+    
+    @POST("auth/logout")
+    suspend fun logout(@Header("Authorization") token: String): ApiResponse<String>
+    
+    @GET("auth/search")
+    suspend fun searchUsers(
+        @Header("Authorization") token: String,
+        @Query("query") query: String
+    ): ApiResponse<List<User>>
+}

@@ -1,3 +1,4 @@
+
 package com.temporarysocial.app.ui
 
 import android.content.Intent
@@ -136,23 +137,24 @@ class MainActivity : AppCompatActivity() {
         // Update session time every second
         lifecycleScope.launch {
             while (true) {
-                val timeFormatted = app.sessionManager.getRemainingSessionTimeFormatted()
-                viewModel.updateSessionTime(timeFormatted)
-                
-                // Update progress bar
-                val progress = app.sessionManager.getSessionProgress()
-                binding.sessionProgressBar.progress = (progress * 100).toInt()
-                
-                // Warning for session expiry
-                if (app.sessionManager.isSessionCritical()) {
-                    binding.sessionProgressBar.progressTintList = 
-                        android.content.res.ColorStateList.valueOf(android.graphics.Color.RED)
-                } else if (app.sessionManager.isSessionNearExpiry()) {
-                    binding.sessionProgressBar.progressTintList = 
-                        android.content.res.ColorStateList.valueOf(android.graphics.Color.YELLOW)
+                try {
+                    val timeFormatted = app.sessionManager.getRemainingSessionTimeFormatted()
+                    viewModel.updateSessionTime(timeFormatted)
+                    
+                    // Update progress bar
+                    val progress = app.sessionManager.getSessionProgress()
+                    binding.sessionProgressBar.progress = (progress * 100).toInt()
+                    
+                    // Warning for session expiry
+                    if (app.sessionManager.isSessionCritical()) {
+                        binding.sessionProgressBar.progressTintList = 
+                            android.content.res.ColorStateList.valueOf(android.graphics.Color.RED)
+                    }
+                    
+                    kotlinx.coroutines.delay(1000)
+                } catch (e: Exception) {
+                    break
                 }
-                
-                kotlinx.coroutines.delay(1000)
             }
         }
     }
@@ -161,32 +163,26 @@ class MainActivity : AppCompatActivity() {
         viewModel.loadUserProfile()
     }
     
-    // Test API Group 1: Authentication
     private fun testAuthAPI() {
         viewModel.testAuthAPI()
     }
     
-    // Test API Group 2: Real-time
     private fun testRealtimeAPI() {
         viewModel.testRealtimeAPI()
     }
     
-    // Test API Group 3: Messaging
     private fun testMessagingAPI() {
         viewModel.testMessagingAPI()
     }
     
-    // Test API Group 4: Payments
     private fun testPaymentAPI() {
         viewModel.testPaymentAPI()
     }
     
-    // Test API Group 5: Reels
     private fun testReelsAPI() {
         viewModel.testReelsAPI()
     }
     
-    // Test API Group 6: Social
     private fun testSocialAPI() {
         viewModel.testSocialAPI()
     }

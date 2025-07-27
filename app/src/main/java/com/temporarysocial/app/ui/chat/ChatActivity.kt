@@ -50,3 +50,31 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 }
+package com.temporarysocial.app.ui.chat
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.temporarysocial.app.databinding.ActivityChatBinding
+
+class ChatActivity : AppCompatActivity() {
+    
+    private lateinit var binding: ActivityChatBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        setupUI()
+    }
+    
+    private fun setupUI() {
+        binding.apply {
+            btnBack.setOnClickListener {
+                finish()
+            }
+            
+            // TODO: Implement chat functionality
+        }
+    }
+}

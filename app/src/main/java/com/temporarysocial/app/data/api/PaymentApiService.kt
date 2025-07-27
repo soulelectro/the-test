@@ -140,3 +140,28 @@ data class CancelPaymentRequest(
     val paymentId: Int,
     val reason: String
 )
+package com.temporarysocial.app.data.api
+
+import com.temporarysocial.app.data.model.ApiResponse
+import retrofit2.http.*
+
+interface PaymentApiService {
+    
+    @GET("payments/history")
+    suspend fun getPaymentHistory(@Header("Authorization") token: String): ApiResponse<List<Any>>
+    
+    @POST("payments/create-order")
+    suspend fun createOrder(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Any>
+    ): ApiResponse<Any>
+    
+    @GET("payments/balance")
+    suspend fun getWalletBalance(@Header("Authorization") token: String): ApiResponse<Double>
+    
+    @POST("payments/transfer")
+    suspend fun transferMoney(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Any>
+    ): ApiResponse<String>
+}

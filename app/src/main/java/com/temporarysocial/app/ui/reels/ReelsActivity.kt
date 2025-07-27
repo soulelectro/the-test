@@ -55,3 +55,31 @@ class ReelsActivity : AppCompatActivity() {
         }
     }
 }
+package com.temporarysocial.app.ui.reels
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.temporarysocial.app.databinding.ActivityReelsBinding
+
+class ReelsActivity : AppCompatActivity() {
+    
+    private lateinit var binding: ActivityReelsBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityReelsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        setupUI()
+    }
+    
+    private fun setupUI() {
+        binding.apply {
+            btnBack.setOnClickListener {
+                finish()
+            }
+            
+            // TODO: Implement reels functionality
+        }
+    }
+}

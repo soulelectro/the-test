@@ -1,3 +1,4 @@
+
 package com.temporarysocial.app.ui.auth
 
 import android.content.Intent
@@ -5,12 +6,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.temporarysocial.app.TemporarySocialApplication
 import com.temporarysocial.app.databinding.ActivityLoginBinding
 import com.temporarysocial.app.ui.MainActivity
 import com.temporarysocial.app.viewmodel.AuthViewModel
-import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     
@@ -40,20 +39,20 @@ class LoginActivity : AppCompatActivity() {
         binding.apply {
             btnSendOtp.setOnClickListener {
                 val phoneNumber = etPhoneNumber.text.toString().trim()
-                if (phoneNumber.isNotEmpty()) {
+                if (phoneNumber.isNotEmpty() && phoneNumber.length >= 10) {
                     viewModel.sendOTP(phoneNumber)
                 } else {
-                    Toast.makeText(this@LoginActivity, "Please enter phone number", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
                 }
             }
             
             btnVerifyOtp.setOnClickListener {
                 val phoneNumber = etPhoneNumber.text.toString().trim()
                 val otp = etOtp.text.toString().trim()
-                if (phoneNumber.isNotEmpty() && otp.isNotEmpty()) {
+                if (phoneNumber.isNotEmpty() && otp.isNotEmpty() && otp.length == 6) {
                     viewModel.verifyOTP(phoneNumber, otp)
                 } else {
-                    Toast.makeText(this@LoginActivity, "Please enter phone number and OTP", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Please enter a valid 6-digit OTP", Toast.LENGTH_SHORT).show()
                 }
             }
         }

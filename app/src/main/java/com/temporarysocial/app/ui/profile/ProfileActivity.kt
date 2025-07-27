@@ -53,3 +53,31 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 }
+package com.temporarysocial.app.ui.profile
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.temporarysocial.app.databinding.ActivityProfileBinding
+
+class ProfileActivity : AppCompatActivity() {
+    
+    private lateinit by binding: ActivityProfileBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        setupUI()
+    }
+    
+    private fun setupUI() {
+        binding.apply {
+            btnBack.setOnClickListener {
+                finish()
+            }
+            
+            // TODO: Implement profile functionality
+        }
+    }
+}
